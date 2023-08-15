@@ -54,7 +54,7 @@ public class PostServiceImpl implements PostService {
         // create pageable instance
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
 
-        // Send pageable to findAll
+        // Send pageable to findAll to create a page instance
         Page<Post> posts = postRepository.findAll(pageable);
 
         // get content for Page
