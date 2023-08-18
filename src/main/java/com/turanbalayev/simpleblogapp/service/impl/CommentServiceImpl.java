@@ -8,6 +8,7 @@ import com.turanbalayev.simpleblogapp.payload.CommentDto;
 import com.turanbalayev.simpleblogapp.repository.CommentRepository;
 import com.turanbalayev.simpleblogapp.repository.PostRepository;
 import com.turanbalayev.simpleblogapp.service.CommentService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -21,11 +22,13 @@ public class CommentServiceImpl implements CommentService {
 
     private CommentRepository commentRepository;
     private PostRepository postRepository;
+    private ModelMapper mapper;
 
     @Autowired
-    public CommentServiceImpl(CommentRepository commentRepository, PostRepository postRepository) {
+    public CommentServiceImpl(CommentRepository commentRepository, PostRepository postRepository, ModelMapper mapper) {
         this.commentRepository = commentRepository;
         this.postRepository = postRepository;
+        this.mapper = mapper;
     }
 
 
@@ -95,25 +98,28 @@ public class CommentServiceImpl implements CommentService {
 
     // convert comment entity to commentDto
     private CommentDto mapToCommentDTO(Comment comment) {
+        CommentDto commentDto = mapper.map(comment, CommentDto.class);
 
-        CommentDto commentDto = new CommentDto();
 
+/*        CommentDto commentDto = new CommentDto();
         commentDto.setId(comment.getId());
         commentDto.setBody(comment.getBody());
         commentDto.setName(comment.getName());
-        commentDto.setEmail(comment.getEmail());
+        commentDto.setEmail(comment.getEmail());*/
 
         return commentDto;
     }
 
     //convert dto to comment entity
     private Comment mapToCommentEntity(CommentDto commentDto) {
-        Comment comment = new Comment();
+        Comment comment = mapper.map(commentDto,Comment.class);
 
+
+ /*       Comment comment = new Comment();
         comment.setId(commentDto.getId());
         comment.setBody(commentDto.getBody());
         comment.setName(commentDto.getName());
-        comment.setEmail(commentDto.getEmail());
+        comment.setEmail(commentDto.getEmail());*/
 
         return comment;
     }
