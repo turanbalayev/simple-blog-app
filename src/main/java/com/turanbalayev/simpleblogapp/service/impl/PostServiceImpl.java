@@ -14,7 +14,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -39,7 +38,7 @@ public class PostServiceImpl implements PostService {
         Post newPost = postRepository.save(post);
 
         // convert post entity to dto
-        PostDto postDtoResponse = mapToDTO(newPost);
+        PostDto postDtoResponse = mapTOPostDto(newPost);
         return postDtoResponse;
 
 
@@ -48,8 +47,12 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostResponse getAllPosts(int pageNo, int pageSize, String sortBy, String sortDir) {
 
+
+
         // Create sort instance according to sortDir
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+
+
 
         // create pageable instance
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
@@ -60,7 +63,7 @@ public class PostServiceImpl implements PostService {
         // get content for Page
         List<Post> listOfPosts = posts.getContent();
 
-        List<PostDto> content = listOfPosts.stream().map(post -> mapToDTO(post)).collect(Collectors.toList());
+        List<PostDto> content = listOfPosts.stream().map(post -> mapTOPostDto(post)).collect(Collectors.toList());
 
         PostResponse postResponse = new PostResponse();
 
@@ -79,7 +82,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostDto getPostById(long id) {
         Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
-        return mapToDTO(post);
+        return mapTOPostDto(post);
 
     }
 
@@ -93,7 +96,7 @@ public class PostServiceImpl implements PostService {
 
         Post updatedPost = postRepository.save(post);
 
-        return mapToDTO(updatedPost);
+        return mapTOPostDto(updatedPost);
 
 
     }
@@ -106,7 +109,7 @@ public class PostServiceImpl implements PostService {
 
 
     // convert post entity to postDto
-    private PostDto mapToDTO(Post post) {
+    private PostDto mapTOPostDto(Post post) {
 
         PostDto postDto = new PostDto();
         postDto.setId(post.getId());
