@@ -53,8 +53,8 @@ public class SecurityConfig {
                         ((authorize) -> authorize.requestMatchers(HttpMethod.GET, "/api/**").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/posts").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.PUT, "api/posts/{id}").hasRole("ADMIN")
-                                .anyRequest().authenticated())
-                .httpBasic(Customizer.withDefaults());
+                                .requestMatchers("/api/auth/**").permitAll()
+                                .anyRequest().authenticated());
 
 
         return http.build();
@@ -95,7 +95,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.PUT, "/api/customers/{id}", "/api/storages/{id}").authenticated()
                 .requestMatchers(HttpMethod.DELETE, "/api/users/{id}", "/api/storages/{id}", "/api/customers/{id}").authenticated()
                 .anyRequest().denyAll())
-        .httpBasic();
+        ..httpBasic(Customizer.withDefaults());
     return http.build();
     }
 
