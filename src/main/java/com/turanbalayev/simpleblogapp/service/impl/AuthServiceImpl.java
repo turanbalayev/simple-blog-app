@@ -7,6 +7,7 @@ import com.turanbalayev.simpleblogapp.payload.LoginDto;
 import com.turanbalayev.simpleblogapp.payload.RegisterDto;
 import com.turanbalayev.simpleblogapp.repository.RoleRepository;
 import com.turanbalayev.simpleblogapp.repository.UserRepository;
+import com.turanbalayev.simpleblogapp.security.JwtTokenProvider;
 import com.turanbalayev.simpleblogapp.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,17 +29,21 @@ public class AuthServiceImpl implements AuthService {
     private UserRepository userRepository;
     private RoleRepository roleRepository;
     private PasswordEncoder passwordEncoder;
+    private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
     public AuthServiceImpl(AuthenticationManager authenticationManager,
                            UserRepository userRepository,
                            RoleRepository roleRepository,
-                           PasswordEncoder passwordEncoder)
+                           PasswordEncoder passwordEncoder,
+                           JwtTokenProvider jwtTokenProvider
+                           )
     {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
 
@@ -50,7 +55,9 @@ public class AuthServiceImpl implements AuthService {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return "User logged in successfully.";
+        String token = jwtTokenProvider.generateToken(authentication);
+
+        return token;
     }
 
     @Override
@@ -60,7 +67,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         if (userRepository.existsByEmail(registerDto.getEmail())){
-            throw new BlogAPIException(HttpStatus.BAD_REQUEST,"This email is already used.");
+            throw new BlogAPIException(HttpStatus.BAD_REQUEST,"This email is already exist.");
         }
 
         User user = new User();

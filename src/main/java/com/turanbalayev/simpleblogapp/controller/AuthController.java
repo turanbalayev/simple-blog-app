@@ -1,6 +1,7 @@
 package com.turanbalayev.simpleblogapp.controller;
 
 
+import com.turanbalayev.simpleblogapp.payload.JWTAuthResponse;
 import com.turanbalayev.simpleblogapp.payload.LoginDto;
 import com.turanbalayev.simpleblogapp.payload.RegisterDto;
 import com.turanbalayev.simpleblogapp.service.AuthService;
@@ -25,8 +26,10 @@ public class AuthController {
 
 
     @PostMapping(value = {"/login","/signin"})
-    public ResponseEntity<String> login (@RequestBody LoginDto loginDto){
-        String response = authService.login(loginDto);
+    public ResponseEntity<JWTAuthResponse> login (@RequestBody LoginDto loginDto){
+        String token = authService.login(loginDto);
+        JWTAuthResponse response = new JWTAuthResponse();
+        response.setAccessToken(token);
         return ResponseEntity.ok(response);
     }
 
