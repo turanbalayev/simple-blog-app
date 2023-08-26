@@ -3,12 +3,15 @@ package com.turanbalayev.simpleblogapp.payload;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
+import lombok.*;
 
 import java.util.Set;
 
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class PostDto {
 
     private long id;
@@ -32,5 +35,7 @@ public class PostDto {
     @NotEmpty
     private String content;
     private Set<CommentDto> comments;
+
+    private Long categoryID;
 
 }
