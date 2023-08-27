@@ -61,11 +61,12 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests
                         ((authorize) -> authorize.requestMatchers(HttpMethod.GET, "/api/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/api/posts").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.PUT, "api/posts/{id}").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.GET,"/api/category/{id}").permitAll()
-                                .requestMatchers(HttpMethod.PUT,"/api/category/{id}").permitAll()
-                                .requestMatchers(HttpMethod.DELETE,"/api/category/{id}").permitAll()
+/*                                .requestMatchers(HttpMethod.POST, "/api/posts").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "api/posts/{id}").hasRole("ADMIN")*/
+/*                                .requestMatchers(HttpMethod.PUT,"/api/category/{id}").permitAll()
+                                .requestMatchers(HttpMethod.DELETE,"/api/category/{id}").permitAll()*/
+                                .requestMatchers("/swagger-ui/**").permitAll()
+                                .requestMatchers("/v3/api-docs/**").permitAll()
                                 .requestMatchers("/api/auth/**").permitAll()
                                 .anyRequest().authenticated())
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))

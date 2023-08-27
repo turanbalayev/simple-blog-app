@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class CommentController {
         this.commentService = commentService;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/posts/{postId}/comments")
     public ResponseEntity<CommentDto> createComment(
             @PathVariable long postId,
@@ -43,6 +45,7 @@ public class CommentController {
         return new ResponseEntity<>(commentService.getCommentById(postId,commentId), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("posts/{postId}/comments/{commentId}")
     public ResponseEntity<CommentDto> updateComment(
             @PathVariable long postId,
@@ -53,6 +56,8 @@ public class CommentController {
     }
 
 
+
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("posts/{postId}/comments/{commentId}")
     public ResponseEntity<String> deleteComment(
             @PathVariable long postId,
