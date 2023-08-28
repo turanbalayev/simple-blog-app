@@ -80,12 +80,12 @@ public class PostController {
 
 
     @Operation(
-            summary = "Update a post"
-    )
-    @ApiResponse(
-            responseCode = "200",
-            description = "The updated post describing the result of the action is transmitted in the message body."
+            summary = "Update a post",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    description = "The updated post describing the result of the action is transmitted in the message body."
 
+            )
     )
     @SecurityRequirement(name = "Bear Authentication")
     @PreAuthorize("hasRole('ADMIN')")
@@ -96,12 +96,12 @@ public class PostController {
 
 
     @Operation(
-            summary = "Delete a post"
-    )
-    @ApiResponse(
-            responseCode = "200",
-            description = "The post deleted successfully."
+            summary = "Delete a post",
+            responses = @ApiResponse(
+                    responseCode = "200",
+                    description = "The post deleted successfully."
 
+            )
     )
     @SecurityRequirement(name = "Bear Authentication")
     @PreAuthorize("hasRole('ADMIN')")
