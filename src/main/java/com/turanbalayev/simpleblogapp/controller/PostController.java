@@ -46,7 +46,6 @@ public class PostController {
     }
 
 
-
     @Operation(
             summary = "Read all posts with pagination and sorting"
     )
@@ -64,7 +63,6 @@ public class PostController {
     ) {
         return new ResponseEntity<>(postService.getAllPosts(pageNo, pageSize, sortBy, sortDir), HttpStatus.OK);
     }
-
 
 
     @Operation(
@@ -97,7 +95,6 @@ public class PostController {
     }
 
 
-
     @Operation(
             summary = "Delete a post"
     )
@@ -115,15 +112,19 @@ public class PostController {
     }
 
     @Operation(
-            summary = "Read all posts belongs to the given category"
-    )
-    @ApiResponse(
-            responseCode = "200",
-            description = "The posts which belong to the given category have been fetched and transmitted in the message body."
+            summary = "Read all posts belongs to the given category",
+            responses = {@ApiResponse(
+                    responseCode = "200",
+                    description = "The posts which belong to the given category have been fetched and transmitted in the message body."
+            ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Category is not found with the given id."
 
+                    )}
     )
     @GetMapping("/category/{categoryId}")
-    public ResponseEntity<List<PostDto>> getPostsByCategory(@PathVariable long categoryId){
-        return new ResponseEntity<>(postService.getPostsByCategory(categoryId),HttpStatus.OK);
+    public ResponseEntity<List<PostDto>> getPostsByCategory(@PathVariable long categoryId) {
+        return new ResponseEntity<>(postService.getPostsByCategory(categoryId), HttpStatus.OK);
     }
 }
