@@ -2,6 +2,8 @@ package com.turanbalayev.simpleblogapp.controller;
 
 import com.turanbalayev.simpleblogapp.payload.CommentDto;
 import com.turanbalayev.simpleblogapp.service.CommentService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/")
+@Tag(name = "CRUD Operations for Comment Resource")
 public class CommentController {
 
     private CommentService commentService;
@@ -22,6 +25,7 @@ public class CommentController {
         this.commentService = commentService;
     }
 
+    @SecurityRequirement(name = "Bear Authentication")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/posts/{postId}/comments")
     public ResponseEntity<CommentDto> createComment(
@@ -45,6 +49,7 @@ public class CommentController {
         return new ResponseEntity<>(commentService.getCommentById(postId,commentId), HttpStatus.OK);
     }
 
+    @SecurityRequirement(name = "Bear Authentication")
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("posts/{postId}/comments/{commentId}")
     public ResponseEntity<CommentDto> updateComment(
@@ -57,6 +62,7 @@ public class CommentController {
 
 
 
+    @SecurityRequirement(name = "Bear Authentication")
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("posts/{postId}/comments/{commentId}")
     public ResponseEntity<String> deleteComment(

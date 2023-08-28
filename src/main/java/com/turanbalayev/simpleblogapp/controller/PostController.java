@@ -5,6 +5,10 @@ import com.turanbalayev.simpleblogapp.payload.PostDto;
 import com.turanbalayev.simpleblogapp.payload.PostResponse;
 import com.turanbalayev.simpleblogapp.service.PostService;
 import com.turanbalayev.simpleblogapp.utils.AppConstants;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +21,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/posts")
+@Tag(name = "CRUD Operations for Post Resource")
 public class PostController {
     private PostService postService;
 
@@ -26,6 +31,14 @@ public class PostController {
     }
 
 
+    @Operation(
+            summary = "Create a new post"
+    )
+    @ApiResponse(
+            responseCode = "201",
+            description = "The request succeeded, and a new post was created as a result. "
+    )
+    @SecurityRequirement(name = "Bear Authentication")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<PostDto> createPost(@Valid @RequestBody PostDto postDto) {
@@ -33,6 +46,15 @@ public class PostController {
     }
 
 
+
+    @Operation(
+            summary = "Read all posts with pagination and sorting"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "The request succeeded. The posts have been fetched and transmitted in the message body. "
+
+    )
     @GetMapping
     public ResponseEntity<PostResponse> getAllPosts(
             @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
@@ -45,27 +67,63 @@ public class PostController {
 
 
 
-    @GetMapping("/{id}")
-    public ResponseEntity<PostDto> getPostById(@PathVariable long id) {
+    @Operation(
+            summary = "Read a single post"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "The request succeeded. The post hase been fetched and transmitted in the message body. "
+
+    )
+    @GetMapping("/{postId}")
+    public ResponseEntity<PostDto> getPostById(@PathVariable("postId") long id) {
         return new ResponseEntity<>(postService.getPostById(id), HttpStatus.OK);
     }
 
+
+    @Operation(
+            summary = "Update a post"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "The updated post describing the result of the action is transmitted in the message body."
+
+    )
+    @SecurityRequirement(name = "Bear Authentication")
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/{id}")
-    public ResponseEntity<PostDto> updatePostById(@Valid @RequestBody PostDto postDto, @PathVariable long id) {
+    @PutMapping("/{postId}")
+    public ResponseEntity<PostDto> updatePostById(@Valid @RequestBody PostDto postDto, @PathVariable("postId") long id) {
         return new ResponseEntity<>(postService.updatePostById(postDto, id), HttpStatus.OK);
     }
 
 
+
+    @Operation(
+            summary = "Delete a post"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "The post deleted successfully."
+
+    )
+    @SecurityRequirement(name = "Bear Authentication")
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deletePostById(@PathVariable long id) {
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<String> deletePostById(@PathVariable("postId") long id) {
         postService.deletePostById(id);
         return new ResponseEntity<>("Post entity deleted successfully!", HttpStatus.OK);
     }
 
-    @GetMapping("/category/{id}")
-    public ResponseEntity<List<PostDto>> getPostsByCategory(@PathVariable("id") long categoryId){
+    @Operation(
+            summary = "Read all posts belongs to the given category"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "The posts which belong to the given category have been fetched and transmitted in the message body."
+
+    )
+    @GetMapping("/category/{categoryId}")
+    public ResponseEntity<List<PostDto>> getPostsByCategory(@PathVariable long categoryId){
         return new ResponseEntity<>(postService.getPostsByCategory(categoryId),HttpStatus.OK);
     }
 }
