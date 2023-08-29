@@ -19,16 +19,24 @@ public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id",nullable = false)
+    @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "name",nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "description",nullable = false)
+    @Column(name = "description", nullable = false)
     private String description;
 
-    @OneToMany(mappedBy = "category",cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(
+            mappedBy = "category",
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE,
+                    CascadeType.DETACH,
+                    CascadeType.REFRESH
+            }
+    )
     private List<Post> posts = new ArrayList<>();
 
 }
