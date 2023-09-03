@@ -4,6 +4,7 @@ import com.turanbalayev.simpleblogapp.entity.Category;
 import com.turanbalayev.simpleblogapp.exception.ResourceNotFoundException;
 import com.turanbalayev.simpleblogapp.payload.CategoryDto;
 import com.turanbalayev.simpleblogapp.repository.CategoryRepository;
+import com.turanbalayev.simpleblogapp.repository.PostRepository;
 import com.turanbalayev.simpleblogapp.service.CategoryService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,15 +19,21 @@ public class CategoryServiceImpl implements CategoryService {
     private CategoryRepository categoryRepository;
     private ModelMapper mapper;
 
+    private PostRepository postRepository;
+
+
+
     @Autowired
-    public CategoryServiceImpl(CategoryRepository categoryRepository, ModelMapper mapper) {
+    public CategoryServiceImpl(CategoryRepository categoryRepository,
+                               ModelMapper mapper,
+                               PostRepository postRepository) {
         this.categoryRepository = categoryRepository;
         this.mapper = mapper;
+        this.postRepository = postRepository;
     }
 
     @Override
     public CategoryDto addCategory(CategoryDto categoryDto) {
-
 
         Category category = mapper.map(categoryDto,Category.class);
         Category savedCategory = categoryRepository.save(category);
@@ -65,8 +72,18 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void deleteCategory(Long categoryId) {
+
+
+
         Category category = categoryRepository.findById(categoryId).orElseThrow(()->
                 new ResourceNotFoundException("Category","id",categoryId));
+
+        var posts =postRepository.findByCategoryId(categoryId);
+
+        posts.forEach(post -> {
+            post.setCategory(null);
+            postRepository.save(post);
+        });
 
         categoryRepository.delete(category);
     }

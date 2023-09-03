@@ -38,23 +38,45 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostDto createPost(PostDto postDto) {
 
-        Category category = categoryRepository.findById(postDto.getCategoryID()).orElseThrow(()->
-                new ResourceNotFoundException("Category","id",postDto.getCategoryID()));
+        if(postDto.getCategoryID() != null) {
+            Category category = categoryRepository.findById(postDto.getCategoryID()).orElseThrow(()->
+                    new ResourceNotFoundException("Category","id",postDto.getCategoryID()));
+
+            // convert dto to entity
+            Post post = mapToPostEntity(postDto);
+
+            // set category
+            post.setCategory(category);
+
+            // save post to database
+            Post newPost = postRepository.save(post);
+
+            // convert post entity to dto
+            PostDto postDtoResponse = mapTOPostDto(newPost);
+
+            return postDtoResponse;
+        } else {
+            // convert dto to entity
+            Post post = mapToPostEntity(postDto);
+
+            // set category
+            post.setCategory(null);
+
+            // save post to database
+            Post newPost = postRepository.save(post);
+
+            // convert post entity to dto
+            PostDto postDtoResponse = mapTOPostDto(newPost);
+
+            return postDtoResponse;
+        }
 
 
 
-        // convert dto to entity
-        Post post = mapToPostEntity(postDto);
 
-        // set category
-        post.setCategory(category);
 
-        // save post to database
-        Post newPost = postRepository.save(post);
 
-        // convert post entity to dto
-        PostDto postDtoResponse = mapTOPostDto(newPost);
-        return postDtoResponse;
+
 
 
     }
